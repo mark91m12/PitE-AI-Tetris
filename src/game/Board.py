@@ -1,23 +1,39 @@
+import random
+import sys
 from Shape import Shape
 from Shape import Tetrominoe
-from PyQt5.QtWidgets import QFrame
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
+from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication
 from PyQt5.QtCore import Qt, QBasicTimer, pyqtSignal
 from PyQt5.QtGui import QPainter, QColor
 from py4j.java_gateway import JavaGateway, GatewayParameters
+from PyQt5 import QtCore, QtWidgets, QtMultimedia, QtGui
+from PyQt5.QtMultimedia import *
+from PyQt5.QtCore import *
+from Tetris import *
 
 gateway = JavaGateway(gateway_parameters=GatewayParameters(port=25335))
 
 dlv = gateway.entry_point.getData()
 
-class Board(QFrame):
-    msg2Statusbar = pyqtSignal(str)
+
+class Board(QMainWindow):
+    msg2Level = pyqtSignal(object)
+    msg2Score = pyqtSignal(object)
+    msg2State = pyqtSignal(object)
+    msg2NextBoard = pyqtSignal(object)
     BoardWidth = 10
     BoardHeight = 22
-    Speed = 120
-
-    def __init__(self, parent):
-        super().__init__(parent)
-
+    Speed = 50
+ 
+    def __init__(self,player):
+        super().__init__()
+        self.setStyleSheet("QMainWindow {background-image: url(../../data/border_part.png); border: 2px solid rgb(251, 226, 19); border-radius: 3px;}")
+        self.setPalette(QPalette(Qt.white))
+        self.setAutoFillBackground(True)
+        self.setMinimumSize(300, 600)
         self.curPiece = Shape()
         self.curPiece.setRandomShape()
         self.nextCurPiece = Shape()
@@ -25,8 +41,11 @@ class Board(QFrame):
         self.initBoard()
         self.start()
         self.newPiece()
-    
-
+        self.playlist = QMediaPlaylist()
+        self.url = QUrl.fromLocalFile("../../data/sound/lose.mp3")
+        self.playlist.addMedia(QMediaContent(self.url))
+        self.player = player
+            
     def initBoard(self):
         '''initiates board'''
 
@@ -155,8 +174,8 @@ class Board(QFrame):
                 x = int(dlv.getX())
                 y = int(dlv.getY()) + 1
 
-                #if self.curY <= 18:
-                    #self.rotatePiece(int(dlv.getRotation()))
+                if self.curY <= 18:
+                    self.rotatePiece(int(dlv.getRotation()))
 
                 if self.shapeAt(x, y) != Tetrominoe.NoShape and self.shapeAt(x, y + 1) == Tetrominoe.NoShape:
                     if self.curY == y + 2:
@@ -225,20 +244,13 @@ class Board(QFrame):
         numFullLines = numFullLines + len(rowsToRemove)
 
         if numFullLines > 0:
-            
-           
+            self.player.play()
             self.numLinesRemoved = self.numLinesRemoved + numFullLines
+            self.msg2Score.emit(str(self.numLinesRemoved))
 
             self.isWaitingAfterLine = True
             self.curPiece.setShape(Tetrominoe.NoShape)
             self.update()
-            
-    def endGame(self):
-        self.curPiece.setShape(Tetrominoe.NoShape)
-        self.timer.stop()
-        self.isStarted = False
-        
-        
 
     def newPiece(self):
         '''creates a new shape'''
@@ -250,7 +262,8 @@ class Board(QFrame):
         self.tempCurPiece = self.nextCurPiece
         self.nextCurPiece = self.curPiece
         self.curPiece = self.tempCurPiece
- 
+        print(self.nextCurPiece.nextNum)
+        self.msg2NextBoard.emit(str(self.nextCurPiece.nextNum))
         
         
         self.curPiece.set_congif(1)
@@ -260,8 +273,13 @@ class Board(QFrame):
         self.skynet(self.curPiece.shape())
 
         if not self.tryMove(self.curPiece, self.curX, self.curY):
-            self.endGame()
-             
+            self.curPiece.setShape(Tetrominoe.NoShape)
+            self.timer.stop()
+            self.isStarted = False
+            self.msg2State.emit(str("LOSE"))
+            self.player.setPlaylist(self.playlist)
+            self.player.play()
+   
             
 
     def skynet(self, shape):
@@ -270,7 +288,7 @@ class Board(QFrame):
             "place(F,X,Y,C) v notPlace(F,X,Y,C) :- shape(F,_,_,C),cell(X,Y), X<=" + str(self.top_board + 4) + ".")
         self.top_board = 0
 
-        file_board_configuration = open("../../AI/configuration.dl", "w")
+        file_board_configuration = open("../../AI/config.dl", "w")
 
         if shape == Tetrominoe.ZShape:
             file_input.write("shape(z,2,2,1). shape(z,3,2,1). shape(z,2,1,1). shape(z,1,1,1)."
@@ -344,9 +362,11 @@ class Board(QFrame):
 
         i = 0
         while (i < num_rotation):
+            print("try rotate ",i)
             self.curPiece = self.curPiece.rotateLeft();
             i += 1
-        
+
+        print("\n\n")
         self.curPiece.set_congif(new_position)
 
     def drawSquare(self, painter, x, y, shape):
