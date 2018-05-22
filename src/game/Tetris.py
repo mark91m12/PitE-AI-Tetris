@@ -36,7 +36,7 @@ class Tetris(QWidget):
         
         label1 = QLabel("Next：")
         label2 = QLabel("Level：")
-        label3 = QLabel("Score：")
+        label3 = QLabel("Lines：")
         label4 = QLabel("State of Game: ")
         
 
@@ -117,26 +117,35 @@ class Tetris(QWidget):
         self.board.msg2Score.connect(self.slotGetScore)
         self.board.msg2State.connect(self.slotGetState)
         self.board.msg2NextBoard.connect(self.slotNextBoard)
+        
+        quit = QAction("Quit", self)
+        quit.triggered.connect(self.close)
+            
+            
+    def closeEvent(self, event):
+        print("close board")
+        self.player.stop()
+        self.board.endGame()
 
     
     def slotPuse(self, value):
         self.board.pause()
-        print('slotPuse')
+        #print('slotPuse')
 
     def slotGetLevel(self, msg):
-        print("slotGetLevel = >" + msg)
+        #print("slotGetLevel = >" + msg)
         self.levelLCD.display(msg)
 
     def slotGetScore(self, msg):
-        print("slotGetScore = >" + msg)
+        #print("slotGetScore = >" + msg)
         self.scoreLCD.display(msg)
 
     def slotGetState(self, msg):
-        print("slotGetState = >" + msg)
+        #print("slotGetState = >" + msg)
         self.state_of_gameLCD.display(msg)
 
     def slotNextBoard(self, msg):
-        print("slotNextBoard = >" + msg)
+        #print("slotNextBoard = >" + msg)
         self.area2.display(msg)
         self.area2.curPiece = self.board.nextCurPiece
 

@@ -26,7 +26,7 @@ class Board(QMainWindow):
     msg2NextBoard = pyqtSignal(object)
     BoardWidth = 10
     BoardHeight = 22
-    Speed = 50
+    Speed = 120
  
     def __init__(self,player):
         super().__init__()
@@ -45,7 +45,11 @@ class Board(QMainWindow):
         self.url = QUrl.fromLocalFile("../../data/sound/lose.mp3")
         self.playlist.addMedia(QMediaContent(self.url))
         self.player = player
-            
+        self.level = 1
+        self.counter = 0
+        self.msg2Level.emit(str(self.level))
+
+       
     def initBoard(self):
         '''initiates board'''
 
@@ -244,13 +248,31 @@ class Board(QMainWindow):
         numFullLines = numFullLines + len(rowsToRemove)
 
         if numFullLines > 0:
-            self.player.play()
+            
+            self.counter = self.counter + numFullLines
+            
+            if(self.level != 10):
+                
+                if self.counter >= 4 :
+                    self.counter -= 4 
+                    self.level +=1
+                    self.msg2Level.emit(str(self.level))
+                    self.Speed = self.Speed - 10
+                    print("current speed : ",self.Speed)
+                    self.timer.start(self.Speed,self)
+           
             self.numLinesRemoved = self.numLinesRemoved + numFullLines
             self.msg2Score.emit(str(self.numLinesRemoved))
 
             self.isWaitingAfterLine = True
             self.curPiece.setShape(Tetrominoe.NoShape)
             self.update()
+            
+    def endGame(self):
+        self.curPiece.setShape(Tetrominoe.NoShape)
+        self.timer.stop()
+        self.isStarted = False
+        
 
     def newPiece(self):
         '''creates a new shape'''
@@ -262,7 +284,6 @@ class Board(QMainWindow):
         self.tempCurPiece = self.nextCurPiece
         self.nextCurPiece = self.curPiece
         self.curPiece = self.tempCurPiece
-        print(self.nextCurPiece.nextNum)
         self.msg2NextBoard.emit(str(self.nextCurPiece.nextNum))
         
         
@@ -273,9 +294,7 @@ class Board(QMainWindow):
         self.skynet(self.curPiece.shape())
 
         if not self.tryMove(self.curPiece, self.curX, self.curY):
-            self.curPiece.setShape(Tetrominoe.NoShape)
-            self.timer.stop()
-            self.isStarted = False
+            self.endGame()
             self.msg2State.emit(str("LOSE"))
             self.player.setPlaylist(self.playlist)
             self.player.play()
@@ -362,11 +381,9 @@ class Board(QMainWindow):
 
         i = 0
         while (i < num_rotation):
-            print("try rotate ",i)
             self.curPiece = self.curPiece.rotateLeft();
             i += 1
-
-        print("\n\n")
+        
         self.curPiece.set_congif(new_position)
 
     def drawSquare(self, painter, x, y, shape):
