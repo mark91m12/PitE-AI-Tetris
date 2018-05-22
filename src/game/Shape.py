@@ -8,6 +8,7 @@ class Shape(object):
         self.pieceShape = Tetrominoe.NoShape
         self.config=1
         self.setShape(Tetrominoe.NoShape)
+        self.nextNum = 0
 
     coordsTable = (
         ((0, 0), (0, 0), (0, 0), (0, 0)),
@@ -19,15 +20,21 @@ class Shape(object):
         ((0, 0), (-1, 0), (0, 1), (0, 2)),
         ((0, 0), (1, 0), (0, 1), (0, 2))
     )
- 
+
+    def set_congif (self, value):
+        self.config = value
+
+    def get_congif (self):
+        return self.config
+
     def shape(self):
-        '''returns shape '''
+        '''returns shape'''
 
         return self.pieceShape
 
     def setShape(self, shape):
         '''sets a shape'''
-
+        self.nextNum = shape
         table = Shape.coordsTable[shape]
 
         for i in range(4):

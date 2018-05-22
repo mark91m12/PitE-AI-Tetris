@@ -5,26 +5,35 @@ from PyQt5.QtCore import Qt, QBasicTimer, pyqtSignal
 from PyQt5.QtGui import QPainter, QColor
 from py4j.java_gateway import JavaGateway, GatewayParameters
 
+gateway = JavaGateway(gateway_parameters=GatewayParameters(port=25335))
+
+dlv = gateway.entry_point.getData()
+
 class Board(QFrame):
     msg2Statusbar = pyqtSignal(str)
+    BoardWidth = 10
+    BoardHeight = 22
+    Speed = 120
 
     def __init__(self, parent):
         super().__init__(parent)
 
+        self.curPiece = Shape()
+        self.curPiece.setRandomShape()
+        self.nextCurPiece = Shape()
+        self.nextCurPiece.setRandomShape()
         self.initBoard()
+        self.start()
+        self.newPiece()
+    
 
     def initBoard(self):
-        '''initiates board game'''
+        '''initiates board'''
 
         self.timer = QBasicTimer()
         self.isWaitingAfterLine = False
 
-        self.BoardWidth = 10
-        self.BoardHeight = 22
-        self.Speed = 150
-
         self.top_board = 0
-
         self.curX = 0
         self.curY = 0
         self.numLinesRemoved = 0
@@ -66,10 +75,9 @@ class Board(QFrame):
         self.numLinesRemoved = 0
         self.clearBoard()
 
-        self.msg2Statusbar.emit(str(self.numLinesRemoved))
-
         self.newPiece()
         self.timer.start(self.Speed, self)
+        
 
     def pause(self):
         '''pauses game'''
@@ -81,12 +89,10 @@ class Board(QFrame):
 
         if self.isPaused:
             self.timer.stop()
-            self.msg2Statusbar.emit("paused")
-
+            
         else:
             self.timer.start(self.Speed, self)
-            self.msg2Statusbar.emit(str(self.numLinesRemoved))
-
+           
         self.update()
 
     def paintEvent(self, event):
@@ -143,8 +149,30 @@ class Board(QFrame):
                 self.newPiece()
             else:
                 self.oneLineDown()
- 
-                
+
+                self.wait = False
+
+                x = int(dlv.getX())
+                y = int(dlv.getY()) + 1
+
+                #if self.curY <= 18:
+                    #self.rotatePiece(int(dlv.getRotation()))
+
+                if self.shapeAt(x, y) != Tetrominoe.NoShape and self.shapeAt(x, y + 1) == Tetrominoe.NoShape:
+                    if self.curY == y + 2:
+                        self.tryMove(self.curPiece, self.curX + 2, self.curY)
+                        self.wait = True
+
+                if self.shapeAt(x, y + 1) != Tetrominoe.NoShape:
+                    if self.curY == y + 3:
+                        self.tryMove(self.curPiece, self.curX + 2, self.curY)
+                        self.wait = True
+
+                if x < self.curX and not self.wait:
+                    self.tryMove(self.curPiece, self.curX - 1, self.curY)
+                elif x > self.curX and not self.wait:
+                    self.tryMove(self.curPiece, self.curX + 1, self.curY)
+
     def clearBoard(self):
         '''clears shapes from the board'''
 
@@ -196,29 +224,98 @@ class Board(QFrame):
 
         numFullLines = numFullLines + len(rowsToRemove)
 
- 
         if numFullLines > 0:
+            
+           
             self.numLinesRemoved = self.numLinesRemoved + numFullLines
-            self.msg2Statusbar.emit(str(self.numLinesRemoved))
 
             self.isWaitingAfterLine = True
             self.curPiece.setShape(Tetrominoe.NoShape)
             self.update()
+            
+    def endGame(self):
+        self.curPiece.setShape(Tetrominoe.NoShape)
+        self.timer.stop()
+        self.isStarted = False
+        
+        
 
     def newPiece(self):
         '''creates a new shape'''
 
         self.curPiece = Shape()
         self.curPiece.setRandomShape()
+        
+        self.tempCurPiece = Shape()
+        self.tempCurPiece = self.nextCurPiece
+        self.nextCurPiece = self.curPiece
+        self.curPiece = self.tempCurPiece
+ 
+        
+        
+        self.curPiece.set_congif(1)
         self.curX = self.BoardWidth // 2
         self.curY = self.BoardHeight - 1 + self.curPiece.minY()
 
- 
+        self.skynet(self.curPiece.shape())
+
         if not self.tryMove(self.curPiece, self.curX, self.curY):
-            self.curPiece.setShape(Tetrominoe.NoShape)
-            self.timer.stop()
-            self.isStarted = False
-            self.msg2Statusbar.emit("Game over")
+            self.endGame()
+             
+            
+
+    def skynet(self, shape):
+        file_input = open("../../AI/input.dl", "w")
+        file_input.write(
+            "place(F,X,Y,C) v notPlace(F,X,Y,C) :- shape(F,_,_,C),cell(X,Y), X<=" + str(self.top_board + 4) + ".")
+        self.top_board = 0
+
+        file_board_configuration = open("../../AI/configuration.dl", "w")
+
+        if shape == Tetrominoe.ZShape:
+            file_input.write("shape(z,2,2,1). shape(z,3,2,1). shape(z,2,1,1). shape(z,1,1,1)."
+                             + "shape(z,2,2,2). shape(z,3,2,2). shape(z,3,1,2). shape(z,2,3,2). "
+                             + "shape(z,2,2,3). shape(z,2,3,3). shape(z,1,2,3). shape(z,3,3,3). "
+                             + "shape(z,2,2,4). shape(z,1,2,4). shape(z,1,3,4). shape(z,2,1,4).")
+        elif shape == Tetrominoe.TShape:
+            file_input.write("shape(t,2,2,1). shape(t,2,1,1). shape(t,2,3,1). shape(t,3,2,1)."
+                             + "shape(t,2,2,2). shape(t,2,3,2). shape(t,1,2,2). shape(t,3,2,2). "
+                             + "shape(t,2,2,3). shape(t,2,1,3). shape(t,2,3,3). shape(t,1,2,3). "
+                             + "shape(t,2,2,4). shape(t,1,2,4). shape(t,3,2,4). shape(t,2,1,4).")
+        elif shape == Tetrominoe.LShape:
+            file_input.write("shape(l,2,2,1). shape(l,2,1,1). shape(l,1,2,1). shape(l,0,2,1)."
+                             + "shape(l,2,2,2). shape(l,2,1,2). shape(l,2,0,2). shape(l,3,2,2). "
+                             + "shape(l,2,2,3). shape(l,2,3,3). shape(l,3,2,3). shape(l,4,2,3)."
+                             + "shape(l,2,2,4). shape(l,2,3,4). shape(l,2,4,4). shape(l,1,2,4).")
+        elif shape == Tetrominoe.MirroredLShape:
+            file_input.write("shape(j,2,2,1). shape(j,2,3,1). shape(j,1,2,1). shape(j,0,2,1)."
+                             + "shape(j,2,2,2). shape(j,2,1,2). shape(j,2,0,2). shape(j,1,2,2). "
+                             + "shape(j,2,2,3). shape(j,2,1,3). shape(j,3,2,3). shape(j,4,2,3). "
+                             + "shape(j,2,2,4). shape(j,2,3,4). shape(j,2,4,4). shape(j,3,2,4).")
+        elif shape == Tetrominoe.SquareShape:
+            file_input.write("shape(o,2,2,1). shape(o,2,3,1). shape(o,3,2,1). shape(o,3,3,1).")
+        elif shape == Tetrominoe.LineShape:
+            file_input.write("shape(i,2,2,1). shape(i,3,2,1). shape(i,1,2,1). shape(i,0,2,1)."
+                             + "shape(i,2,2,2). shape(i,2,3,2). shape(i,2,1,2). shape(i,2,0,2).")
+        elif shape == Tetrominoe.SShape:
+            file_input.write(" shape(s,2,2,1). shape(s,3,2,1). shape(s,2,3,1). shape(s,1,3,1)."
+                             + "shape(s,2,2,2). shape(s,1,1,2). shape(s,1,2,2). shape(s,2,3,2). "
+                             + "shape(s,2,2,3). shape(s,1,2,3). shape(s,2,1,3). shape(s,3,1,3). "
+                             + "shape(s,2,2,4). shape(s,2,1,4). shape(s,3,2,4). shape(s,3,3,4).")
+
+        file_input.close()
+
+        # write board config
+        for i in range(self.BoardWidth):
+            for j in range(self.BoardHeight):
+                if self.shapeAt(i, j) != Tetrominoe.NoShape:
+                    if j > self.top_board:
+                        self.top_board = j;
+                    file_board_configuration.write("occupied1(" + str(j) + "," + str(i) + ",shape).");
+
+        file_board_configuration.close()
+        dlv.reset()
+        dlv.runAI()
 
     def tryMove(self, newPiece, newX, newY):
         '''tries to move a shape'''
@@ -247,11 +344,9 @@ class Board(QFrame):
 
         i = 0
         while (i < num_rotation):
-            print("try rotate ",i)
             self.curPiece = self.curPiece.rotateLeft();
             i += 1
-
-        print("\n\n")
+        
         self.curPiece.set_congif(new_position)
 
     def drawSquare(self, painter, x, y, shape):
