@@ -9,7 +9,7 @@ class Tetris(QMainWindow):
         self.initUI()
 
     def initUI(self):
-        '''initiates application UI'''
+        '''initiates tetris application UI'''
 
         self.tboard = Board(self)
         self.setCentralWidget(self.tboard)

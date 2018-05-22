@@ -14,7 +14,7 @@ class Board(QFrame):
         self.initBoard()
 
     def initBoard(self):
-        '''initiates board'''
+        '''initiates board game'''
 
         self.timer = QBasicTimer()
         self.isWaitingAfterLine = False

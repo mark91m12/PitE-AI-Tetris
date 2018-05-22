@@ -21,7 +21,7 @@ class Shape(object):
     )
  
     def shape(self):
-        '''returns shape'''
+        '''returns shape '''
 
         return self.pieceShape
 
