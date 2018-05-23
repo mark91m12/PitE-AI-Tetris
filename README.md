@@ -5,7 +5,7 @@
 # PitE-Ai-Tetris
 
 
-This is the project of the course "Python in the Enterprise", has been implemented an Artificial intelligence for the game [Tetris]
+This is the project of the course "Python in the Enterprise", has been implemented an Artificial intelligence for the game [Tetris](https://en.wikipedia.org/wiki/Tetris)
   
 ## Authors
 
