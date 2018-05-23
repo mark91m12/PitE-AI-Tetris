@@ -16,7 +16,7 @@ class NextBoard(QMainWindow):
         self.setAutoFillBackground(True)  
         self.curPiece = Shape()
         self.shape = 1
-        self.BoardWidth = 3.5
+        self.BoardWidth = 6
         self.BoardHeight = 6
 
     def display(self, msg):

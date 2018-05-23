@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import QMainWindow, QFrame, QDesktopWidget, QApplication
 from PyQt5.QtCore import Qt, QBasicTimer, pyqtSignal
 from PyQt5.QtGui import QPainter, QColor
 from Tetris import Tetris
+import pygame
 
 
 from math import cos, radians
@@ -172,7 +173,8 @@ class run(object):
         f2 = font.Font(join('../../data/FEASFBRG.ttf'), 15)
         f3 = font.Font(join('../../data/FEASFBRG.ttf'), 30)
         f4 = font.Font(join('../../data/FEASFBRG.ttf'), 50)
-
+        
+        
         mainmenu = f.render('Skynet Tetris', 10, (253, 158, 52))
         r = mainmenu.get_rect()
         r.centerx, r.top = 512, 120
@@ -181,6 +183,8 @@ class run(object):
         bg = scr.copy()
         scr.blit(mainmenu, r)
         display.flip()
+        startMusic()
+        
 
         menu1 = {"menu": ['START GAME', 'ABOUT', 'EXIT'], "font1": f4, "pos":
                  'center', "color1": (251, 226, 19), "light": 6, "speed": 200, "lag": 20}
@@ -188,7 +192,7 @@ class run(object):
         menu3 = {"menu": ['Carricato Mario Egidio', 'Marco Amato', 'BACK'], "font1": f1, "pos":
             'center', "color1": (251, 226, 19), "light": 6, "speed": 200, "lag": 20}
 
-
+        
         resp = "re-show"
         while resp == "re-show":
             print("reinit_while")
@@ -217,6 +221,7 @@ class run(object):
                print("Exit")
 
             if resp == 'START GAME':
+                stopmusic()
                 mainmenu = f.render('Skynet Tetris', 10, (253, 158, 52))
                 r = mainmenu.get_rect()
                 r.centerx, r.top = 512, 120
@@ -234,6 +239,62 @@ class run(object):
                 display.update(scr.blit(mainmenu, r))                                          
                 
                 
+
+def playsound(soundfile):
+    """Play sound through default mixer channel in blocking manner.
+       This will load the whole sound into memory before playback
+    """
+    pygame.init()
+    pygame.mixer.init()
+    sound = pygame.mixer.Sound(soundfile)
+    clock = pygame.time.Clock()
+    sound.play()
+    while pygame.mixer.get_busy():
+        print
+        ("Playing...")
+        clock.tick(1000)
+
+def playmusic(soundfile):
+    """Stream music with mixer.music module in blocking manner.
+       This will stream the sound from disk while playing.
+    """
+    pygame.init()
+    pygame.mixer.init()
+    clock = pygame.time.Clock()
+    pygame.mixer.music.load(soundfile)
+    pygame.mixer.music.play(-1)
+
+def stopmusic():
+    """stop currently playing music"""
+    pygame.mixer.music.stop()
+
+
+def getmixerargs():
+    pygame.mixer.init()
+    freq, size, chan = pygame.mixer.get_init()
+    return freq, size, chan
+
+
+def initMixer():
+    BUFFER = 3072
+    FREQ, SIZE, CHAN = getmixerargs()
+    pygame.mixer.init(FREQ, SIZE, CHAN, BUFFER)
+
+
+def startMusic():
+    try:
+        initMixer()
+        filename = '../../data/sound/tetris_piano.mp3' #MainMenu Music
+        playmusic(filename)
+    except KeyboardInterrupt: 
+        stopmusic()
+        print("\nPlay Stopped by user")
+    except Exception:
+        print
+        ("unknown error ")
+
+    print("Done")
+
                 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

@@ -26,9 +26,9 @@ class Board(QMainWindow):
     msg2NextBoard = pyqtSignal(object)
     BoardWidth = 10
     BoardHeight = 22
-    Speed = 120
+    Speed = 70
  
-    def __init__(self,player):
+    def __init__(self):
         super().__init__()
         self.setStyleSheet("QMainWindow {background-image: url(../../data/border_part.png); border: 2px solid rgb(251, 226, 19); border-radius: 3px;}")
         self.setPalette(QPalette(Qt.white))
@@ -41,15 +41,18 @@ class Board(QMainWindow):
         self.initBoard()
         self.start()
         self.newPiece()
-        self.playlist = QMediaPlaylist()
-        self.url = QUrl.fromLocalFile("../../data/sound/lose.mp3")
-        self.playlist.addMedia(QMediaContent(self.url))
-        self.player = player
+        self.player_main_music = QMediaPlayer()
+        self.player_delete1row = QMediaPlayer()
+        self.player_delete4row = QMediaPlayer()
+        self.player_pause_sound = QMediaPlayer()
+        self.playlist_main = QMediaPlaylist()
+        self.start_main_music() 
+        
         self.level = 1
         self.counter = 0
         self.msg2Level.emit(str(self.level))
-
-       
+                
+               
     def initBoard(self):
         '''initiates board'''
 
@@ -66,6 +69,9 @@ class Board(QMainWindow):
         self.isStarted = False
         self.isPaused = False
         self.clearBoard()
+        
+        quit = QAction("Quit", self)
+        quit.triggered.connect(self.close)
 
     def shapeAt(self, x, y):
         '''determines shape at the board position'''
@@ -104,7 +110,7 @@ class Board(QMainWindow):
 
     def pause(self):
         '''pauses game'''
-
+        
         if not self.isStarted:
             return
 
@@ -150,12 +156,7 @@ class Board(QMainWindow):
         if not self.isStarted or self.curPiece.shape() == Tetrominoe.NoShape:
             super(Board, self).keyPressEvent(event)
             return
-
         key = event.key()
-
-        if key == Qt.Key_P:
-            self.pause()
-            return
 
         if self.isPaused:
             return
@@ -245,13 +246,19 @@ class Board(QMainWindow):
                 for l in range(self.BoardWidth):
                     self.setShapeAt(l, k, self.shapeAt(l, k + 1))
 
+        if  len(rowsToRemove) == 4:
+            self.start_delete_4_row()
+        elif 0< len(rowsToRemove) < 4:
+            self.start_delete_1_row()
+        
+        
         numFullLines = numFullLines + len(rowsToRemove)
 
         if numFullLines > 0:
             
             self.counter = self.counter + numFullLines
             
-            if(self.level != 10):
+            if self.level != 5:
                 
                 if self.counter >= 4 :
                     self.counter -= 4 
@@ -296,8 +303,8 @@ class Board(QMainWindow):
         if not self.tryMove(self.curPiece, self.curX, self.curY):
             self.endGame()
             self.msg2State.emit(str("LOSE"))
-            self.player.setPlaylist(self.playlist)
-            self.player.play()
+            self.start_lose_sound()
+            
    
             
 
@@ -405,3 +412,51 @@ class Board(QMainWindow):
                          x + self.squareWidth() - 1, y + self.squareHeight() - 1)
         painter.drawLine(x + self.squareWidth() - 1,
                          y + self.squareHeight() - 1, x + self.squareWidth() - 1, y + 1)
+                
+    
+    
+           
+    def start_main_music(self):
+        self.url_main = QUrl.fromLocalFile("../../data/sound/Tetris.mp3")
+        self.playlist_main.addMedia(QMediaContent(self.url_main))
+        self.playlist_main.setPlaybackMode(QMediaPlaylist.Loop)
+        self.player_main_music.setPlaylist(self.playlist_main)
+        self.player_main_music.play()    
+    
+    def stop_main_music(self):
+        self.player_main_music.stop()
+    
+    def pause_main_music(self):
+        self.player_main_music.pause()
+    
+    def restart_main_music(self):
+        self.player_main_music.play()
+    
+    
+    def start_lose_sound(self):
+        self.playlist = QMediaPlaylist()
+        self.url = QUrl.fromLocalFile("../../data/sound/lose.mp3")
+        self.playlist.addMedia(QMediaContent(self.url))
+        self.player_main_music.setPlaylist(self.playlist)
+        self.player_main_music.play()
+        
+    def start_pause_sound(self):
+        self.playlistPause = QMediaPlaylist()
+        self.url = QUrl.fromLocalFile("../../data/sound/pause.mp3")
+        self.playlistPause.addMedia(QMediaContent(self.url))
+        self.player_pause_sound.setPlaylist(self.playlistPause)
+        self.player_pause_sound.play()    
+
+    def start_delete_1_row(self):
+        self.playlist1Row = QMediaPlaylist()
+        self.url2 = QUrl.fromLocalFile("../../data/sound/line-remove.mp3")
+        self.playlist1Row.addMedia(QMediaContent(self.url2))
+        self.player_delete1row.setPlaylist(self.playlist1Row)
+        self.player_delete1row.play()
+    
+    def start_delete_4_row(self):
+        self.playlist4Row = QMediaPlaylist()
+        self.url1 = QUrl.fromLocalFile("../../data/sound/line-removal4.mp3")
+        self.playlist4Row.addMedia(QMediaContent(self.url1))
+        self.player_delete4row.setPlaylist(self.playlist4Row)
+        self.player_delete4row.play()

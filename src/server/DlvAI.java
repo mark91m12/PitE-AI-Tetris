@@ -51,7 +51,7 @@ public class DlvAI {
  
 				Predicate temp = model.getPredicate(i);
 				
-				System.out.println("result => "+temp);
+				//System.out.println("result => "+temp);
  				setResult(temp);
 			}
  		}		

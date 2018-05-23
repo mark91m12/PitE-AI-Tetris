@@ -22,18 +22,8 @@ class Tetris(QWidget):
 
         self.setWindowTitle("Skynet Tetris")
         self.setStyleSheet("QWidget {background: rgb(20,62,100);}")
-        
+        self.paused = False
 
-        self.playlist = QMediaPlaylist()
-        self.url = QUrl.fromLocalFile("../../data/sound/Tetris.mp3")
-        self.playlist.addMedia(QMediaContent(self.url))
-        self.playlist.setPlaybackMode(QMediaPlaylist.Loop)
-      
-
-        self.player = QMediaPlayer()
-        self.player.setPlaylist(self.playlist)
-        self.player.play()
-        
         label1 = QLabel("Next：")
         label2 = QLabel("Level：")
         label3 = QLabel("Lines：")
@@ -67,7 +57,7 @@ class Tetris(QWidget):
         self.PausePushButton.setStyleSheet(" background-color: rgb(0, 255, 0); border: none;")
         
 
-        self.board = Board(self.player)
+        self.board = Board()
         self.stack2 = QStackedWidget()
         self.stack2.setFrameStyle(QFrame.Panel | QFrame.Raised)
         self.area2 = NextBoard()
@@ -123,14 +113,22 @@ class Tetris(QWidget):
             
             
     def closeEvent(self, event):
-        print("close board")
-        self.player.stop()
+        self.board.stop_main_music()
         self.board.endGame()
 
     
     def slotPuse(self, value):
-        self.board.pause()
-        #print('slotPuse')
+        if self.paused == True:
+            self.board.restart_main_music()
+            self.board.pause()
+            self.paused = False
+            return
+        else: 
+            self.board.pause_main_music()
+            self.board.start_pause_sound()
+            self.board.pause()
+            self.paused = True
+            return
 
     def slotGetLevel(self, msg):
         #print("slotGetLevel = >" + msg)
@@ -148,7 +146,5 @@ class Tetris(QWidget):
         #print("slotNextBoard = >" + msg)
         self.area2.display(msg)
         self.area2.curPiece = self.board.nextCurPiece
-
-    def stop_main_sounds(self):
-        self.player.stop()    
+        
   
