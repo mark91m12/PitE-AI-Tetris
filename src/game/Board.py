@@ -417,7 +417,9 @@ class Board(QMainWindow):
     
            
     def start_main_music(self):
-        self.url_main = QUrl.fromLocalFile("../../data/sound/Tetris.mp3")
+        version = random.randint(1,2)
+        url = "../../data/sound/tetris_"+str(version)+".mp3"
+        self.url_main = QUrl.fromLocalFile(url)
         self.playlist_main.addMedia(QMediaContent(self.url_main))
         self.playlist_main.setPlaybackMode(QMediaPlaylist.Loop)
         self.player_main_music.setPlaylist(self.playlist_main)
