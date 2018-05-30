@@ -24,6 +24,102 @@ DLV (datalog with disjunction) is a powerful though freely available deductive d
 * **DLV rappresentation of Tetris Game** <br />
 TO DO:
 
+* **DLV Wrapper and py4j library** <br />
+The DLV Wrapper API is a Java Library containing a class called **DLVWrapper**; this class is a singleton that always returns the same object instance of WLVWrapper. The DLVWrapper class implements the necessary methods to create a new object that provides to initialize, execute and recive the results from a DLV process. The interface DLVInvocation implements the pattern Observer and it is the observable that notifies to every signed observer (each class implementing the interface DLVHandler) the results of DLV execution.<br /><br /> 
+**Py4J** enables Python programs running in a Python interpreter to dynamically access Java objects in a Java Virtual Machine. Methods are called as if the Java objects resided in the Python interpreter and Java collections can be accessed through standard Python collection methods. Py4J also enables Java programs to call back Python objects.
+These two library are used rispectively for enable the comunication between DLV and Java and between Java and Python. The result is a custom wrapper that are used like a bridge between the DLV system and the Python module.
+
+* **Python module** <br />
+As been developed python desktop application that is able to receive messages from the Java module containing the logic of the game. <br />Information like **next tetromino**, **rotation or position of the piece** are conteined in this comunication, the application exhibit proper performance and good usability, infact it efficiently processes the message and consequentily it updates the graphical interface <br />During the development as been used **Pygame** and **PyQt5** libraries.
+
+
+## Features
+
+* Start Game : start a classic istance of Tetris game.
+* Start Frenzy Game : start a fast and frenzy game with the scope to test the response of AI at high speed.
+
+## Getting Started
+
+**Prerequisites**
+* In order to run this project is important to use python version 3 or upper,Java 1.8 or upper, DLV Wrapper library, py4j library, Pygame library, PyQt5 library.<br />
+
+  Install Python with:
+  
+  ```shell
+   $ sudo apt-get install python3
+  ```
+  now check your version: 
+  ```shell
+  $ python --version
+  ```
+  Install Java follow this [guide](https://www.java.com/en/download/help/windows_manual_download.xml)
+  
+  now check your version: 
+  ```shell
+  $ java --version
+  ```
+  
+   Install Pygame with:
+  
+  ```shell
+   $ pip install Pygame
+  ```
+  
+   Install PyQt5 with:
+  
+  ```shell
+   $ pip install PyQt5
+  ```
+  
+    Install py4j with:
+  
+  ```shell
+   $ pip install py4j
+  ```
+  
+  Install DLV Wrapper with:
+  
+  // TO DO
+  
+  
+**Basic usage**
+  // TO DO 
+
+## Type of Gamer and Testing
+As in reality were taken into account two of most common gamers types of Tetris: the horizontal Gamer and the vertical Gamer.<br \>
+
+**The Horizontal Gamer** is a kind of player who trying to minimize the height of the Tetris Configuration and he doesn't care of the problem of the blanks space in each rows. Of course this player aims to maximise the points of game. <br \>
+The follow image show the results of 15 run with this typology of player:
+
+<p align="center">
+  <img width="660" height="400" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/horizontal.PNG">
+</p>
+
+**The Vertical Gamer** is a kind of player who trying to minimize the blanks in each rows of the Tetris Configuration and he doesn't care of the problem of the configuration's height. Of course this player aims to maximise the point of game. <br \>
+The follow image show the results of 15 run with this typology of player:
+
+
+<p align="center">
+  <img width="660" height="400" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/vertical.PNG">
+</p>
+
+**Skyner Gamer** is a kind of player who trying to make the best of Horizontal and Vertial players. Like a human this gamer up or down a certain treshold pursues one or another tactic. He try to minimize the blanks in each rows of the Tetris Configuration down a certain row with with horizontal approach, and when the configuratuon become too height he try to minimize this height with vertical approach  <br \>
+So like a real player he based his strategy on a current event of game. The follow image show the results of 15 run with this typology of player:
+
+
+<p align="center">
+  <img width="660" height="400" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/skynet.PNG">
+</p>
+
+As we can see with the combination of two strategy the means of point for match is significantly higher.
+
+
+
+
+
+
+
+
 
 
 
