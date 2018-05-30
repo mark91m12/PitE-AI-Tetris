@@ -39,6 +39,7 @@ class Board(QMainWindow):
         self.nextCurPiece = Shape()
         self.nextCurPiece.setRandomShape()
         self.initBoard()
+        self.mode = mode
         if mode == "n":
            self.Speed = 70 
            self.level = 0
@@ -184,30 +185,21 @@ class Board(QMainWindow):
                 self.newPiece()
             else:
                 self.oneLineDown()
+                
+                if self.mode == "n" :
+                      
+     
+                    x = int(dlv.getX())
+                    
+                    if self.curY <= 18:
+                        self.rotatePiece(int(dlv.getRotation()))
+    
+                    if x < self.curX :
+                        self.tryMove(self.curPiece, self.curX - 1, self.curY)
+                    elif x > self.curX :
+                        self.tryMove(self.curPiece, self.curX + 1, self.curY)
 
-                '''self.wait = False
-
-                x = int(dlv.getX())
-                y = int(dlv.getY()) + 1
-
-                if self.curY <= 18:
-                    self.rotatePiece(int(dlv.getRotation()))
-
-                if self.shapeAt(x, y) != Tetrominoe.NoShape and self.shapeAt(x, y + 1) == Tetrominoe.NoShape:
-                    if self.curY == y + 2:
-                        self.tryMove(self.curPiece, self.curX + 2, self.curY)
-                        self.wait = True
-
-                if self.shapeAt(x, y + 1) != Tetrominoe.NoShape:
-                    if self.curY == y + 3:
-                        self.tryMove(self.curPiece, self.curX + 2, self.curY)
-                        self.wait = True
-
-                if x < self.curX and not self.wait:
-                    self.tryMove(self.curPiece, self.curX - 1, self.curY)
-                elif x > self.curX and not self.wait:
-                    self.tryMove(self.curPiece, self.curX + 1, self.curY)'''
-
+                 
     def clearBoard(self):
         '''clears shapes from the board'''
 
@@ -293,34 +285,35 @@ class Board(QMainWindow):
         
 
     def newPiece(self):
-       '''creates a new shape'''
+        '''creates a new shape'''
+        self.curPiece = Shape()
+        self.curPiece.setRandomShape()
+       
+        self.tempCurPiece = Shape()
+        self.tempCurPiece = self.nextCurPiece
+        self.nextCurPiece = self.curPiece
+        self.curPiece = self.tempCurPiece
+        self.msg2NextBoard.emit(str(self.nextCurPiece.nextNum))
+       
+       
+        self.curPiece.set_congif(1)
 
-       self.curPiece = Shape()
-       self.curPiece.setRandomShape()
-       
-       self.tempCurPiece = Shape()
-       self.tempCurPiece = self.nextCurPiece
-       self.nextCurPiece = self.curPiece
-       self.curPiece = self.tempCurPiece
-       self.msg2NextBoard.emit(str(self.nextCurPiece.nextNum))
-       
-       
-       self.curPiece.set_congif(1)
-       #self.curX = self.BoardWidth // 2
-       #self.curY = self.BoardHeight - 1 + self.curPiece.minY()
-
-       self.skynet(self.curPiece.shape())
+        if self.mode == "n":
+            self.curX = self.BoardWidth // 2                    
+            self.skynet(self.curPiece.shape())
+        else :
+            self.skynet(self.curPiece.shape())
+            self.rotatePiece(int(dlv.getRotation()))
+            self.curX = int(dlv.getX())
            
-       self.rotatePiece(int(dlv.getRotation()))
-       
-       self.curX = int(dlv.getX())
-       self.curY = self.BoardHeight - 1 + self.curPiece.minY()
-       
+        self.curY = self.BoardHeight - 1 + self.curPiece.minY()
 
-       if not self.tryMove(self.curPiece, self.curX, self.curY):
-           self.endGame()
-           self.msg2State.emit(str("LOSE"))
-           self.start_lose_sound()
+
+        if not self.tryMove(self.curPiece, self.curX, self.curY):
+            self.endGame()
+            self.msg2State.emit(str("LOSE"))
+            self.start_lose_sound()
+       
             
    
             
