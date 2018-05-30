@@ -113,17 +113,21 @@ So like a real player he based his strategy on a current event of game. The foll
 
 As we can see with the combination of two strategy the means of point for match is significantly higher.
 
+## Game Screen
+
+In this section are proprosed some screenshots of game.
+
+* User Interface:
+<p align="center">
+  <img width="460" height="330" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/main.PNG">
+</p>
 
 
-
-
-
-
-
-
-
-
-  
+* Instance of game interface:
+<p align="center">
+  <img width="330" height="420" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/game.PNG">
+</p>
+ 
 ## Authors
 
 * **Mario Egidio Carricato** - *Erasmus student AGH* - [other projects](https://github.com/mario181091)
