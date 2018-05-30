@@ -8,7 +8,7 @@
 This is the project of the course "Python in the Enterprise", has been implemented an Artificial intelligence for the game [Tetris](https://en.wikipedia.org/wiki/Tetris) by using [DLV](https://en.wikipedia.org/wiki/DLV) and then through a Java Module link it with Python.
 
 ## Structure 
-The structure of our project can be described with follow image
+The structure of our project can be described with follow image:
 
 <p align="center">
   <img width="460" height="300" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/structure_project.png">
@@ -20,6 +20,10 @@ As can be seen in the image this problem has been solved with the help of Java v
 * **DLV** <br />
 Datalog is a declarative (programming) language. This means that the programmer does not write a program that solves some problem but instead specifies what the solution should look like, and a Datalog inference engine tries to find the the way to solve the problem and the solution itself. This is done with rules and facts.<br />  **Facts** are the input data, and **rules** can be used to derive more facts, and hopefully, the solution of the given problem.<br /> 
 DLV (datalog with disjunction) is a powerful though freely available deductive database system. It is based on the declarative programming language datalog, which is known for being a convenient tool for knowledge representation. With its disjunctive extensions, it is well suited for all kinds of nonmonotonic reasoning, including diagnosis and planning.
+
+* **DLV rappresentation of Tetris Game** <br />
+TO DO:
+
 
 
 
