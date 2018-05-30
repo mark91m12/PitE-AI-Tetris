@@ -5,17 +5,17 @@
 # PitE-Ai-Tetris
 
 
-This is the project of the course "Python in the Enterprise", has been implemented an Artificial intelligence for the game [Tetris](https://en.wikipedia.org/wiki/Tetris) by using [DLV](https://en.wikipedia.org/wiki/DLV) and then through a Java Module link it with Python.
+This is the project of the course "Python in the Enterprise", has been implemented an Artificial intelligence for the game [Tetris](https://en.wikipedia.org/wiki/Tetris), has been used [DLV](https://en.wikipedia.org/wiki/DLV) for the core of A.I. and then through a Java Module it has been linked with Python.
 
 ## Structure 
-The structure of our project can be described with follow image:
+The structure of our project can be described by the following image:
 
 <p align="center">
   <img width="460" height="300" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/structure_project.png">
 </p>
 
-From a structural point of view, the main problem of project was linking DLV system with Python module, infact there isn't wrapper between these two languages. 
-As can be seen in the image this problem has been solved with the help of Java virtual machines. This was possible becouse exist a wrapper between DLV an Java ([DLV Wrapper](http://www.dlvsystem.com/dlvwrapper/)) and at same time exist also a wrapper between Java and Python ([Py4j](https://www.py4j.org/install.html#install-instructions)). So it was possible use Java like a bridge throught DLV and Python.       
+From a structural point of view, the main problem of project was linking DLV system with Python module, indeed there isn't a library that link directly these two languages. 
+As can be seen in the image this problem has been solved with the help of Java virtual machines. This was possible because exists a wrapper between DLV and Java ([DLV Wrapper](http://www.dlvsystem.com/dlvwrapper/)) and at same time exist also a "bridge" between Java and Python ([Py4j](https://www.py4j.org/install.html#install-instructions)). So it was possible use Java like a bridge between DLV and Python.       
 
 * **DLV** <br />
 Datalog is a declarative (programming) language. This means that the programmer does not write a program that solves some problem but instead specifies what the solution should look like, and a Datalog inference engine tries to find the the way to solve the problem and the solution itself. This is done with rules and facts.<br />  **Facts** are the input data, and **rules** can be used to derive more facts, and hopefully, the solution of the given problem.<br /> 
@@ -30,7 +30,7 @@ The DLV Wrapper API is a Java Library containing a class called **DLVWrapper**; 
 These two library are used rispectively for enable the comunication between DLV and Java and between Java and Python. The result is a custom wrapper that are used like a bridge between the DLV system and the Python module.
 
 * **Python module** <br />
-As been developed python desktop application that is able to receive messages from the Java module containing the logic of the game. <br />Information like **next tetromino**, **rotation or position of the piece** are conteined in this comunication, the application exhibit proper performance and good usability, infact it efficiently processes the message and consequentily it updates the graphical interface <br />During the development as been used **Pygame** and **PyQt5** libraries.
+Has been developed python desktop application that is able to receive messages from the Java module containing the game logic. <br />Information like **next piece**, **rotation or position of the piece** are conteined in this comunication, the application exhibit proper performance and good usability, infact it efficiently processes the message and consequentily updates the GUI <br />During the development has been used **Pygame** and **PyQt5** libraries.
 
 
 ## Features
@@ -41,7 +41,7 @@ As been developed python desktop application that is able to receive messages fr
 ## Getting Started
 
 **Prerequisites**
-* In order to run this project is important to use python version 3 or upper,Java 1.8 or upper, DLV Wrapper library, py4j library, Pygame library, PyQt5 library.<br />
+* In order to run this project is important to use python version 3 or upper,Java 1.8 or upper and DLV Wrapper, py4j, Pygame and PyQt5 libraries.<br />
 
   Install Python with:
   
@@ -71,7 +71,7 @@ As been developed python desktop application that is able to receive messages fr
    $ pip install PyQt5
   ```
   
-    Install py4j with:
+   Install py4j with:
   
   ```shell
    $ pip install py4j
@@ -85,26 +85,29 @@ As been developed python desktop application that is able to receive messages fr
 **Basic usage**
   // TO DO 
 
-## Type of Gamer and Testing
-As in reality were taken into account two of most common gamers types of Tetris: the horizontal Gamer and the vertical Gamer.<br \>
+## Games approaches and Testing
+<br>Like in real life were taken into consideration two of most common ways to play Tetris: the horizontal one (rarely used) and the vertical one.<br \>
 
-**The Horizontal Gamer** is a kind of player who trying to minimize the height of the Tetris Configuration and he doesn't care of the problem of the blanks space in each rows. Of course this player aims to maximise the points of game. <br \>
-The follow image show the results of 15 run with this typology of player:
+**Horizontal approach**
+<br>this way of play tetris tries to minimize the height of the Board Configuration and he doesn't care of the problem of the blanks space in each rows. <br \>
+The follow image show the results of 15 run with this kind of approach:
 
 <p align="center">
   <img width="660" height="400" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/horizontal.PNG">
 </p>
 
-**The Vertical Gamer** is a kind of player who trying to minimize the blanks in each rows of the Tetris Configuration and he doesn't care of the problem of the configuration's height. Of course this player aims to maximise the point of game. <br \>
-The follow image show the results of 15 run with this typology of player:
+**Vertical approach** 
+<br>Is a kind of approach that tries to minimize the blanks in each rows of the Board Configuration and it doesn't care of the problem of the configuration's height. Of course this approach aims to build better configuration for the next pieces in input. <br \>
+The follow image show the results of 15 run with this kind of approach:
 
 
 <p align="center">
   <img width="660" height="400" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/vertical.PNG">
 </p>
 
-**Skyner Gamer** is a kind of player who trying to make the best of Horizontal and Vertial players. Like a human this gamer up or down a certain treshold pursues one or another tactic. He try to minimize the blanks in each rows of the Tetris Configuration down a certain row with with horizontal approach, and when the configuratuon become too height he try to minimize this height with vertical approach  <br \>
-So like a real player he based his strategy on a current event of game. The follow image show the results of 15 run with this typology of player:
+**Skynet** 
+<br>Our solution is a fusion of this two kinds of approaches. Like a human our Artificial Intelligence (Skynet) mix both way to play. It tries to minimize the blanks in each rows of the Board Configuration using the vertical approach, and when the configuratuon become too height it change strategy and tries to minimize this height with horizontal approach  <br \>
+So like a real player he based his strategy on a current event of game. The follow image show the results of 15 run with Skynet:
 
 
 <p align="center">
