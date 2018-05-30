@@ -86,10 +86,11 @@ Has been developed python desktop application that is able to receive messages f
   // TO DO 
 
 ## Games approaches and Testing
-<br>Like in real life were taken into consideration two of most common ways to play Tetris: the horizontal one (rarely used) and the vertical one.<br \>
+Like in real life were taken into consideration two of most common ways to play Tetris: the horizontal one (rarely used) and the vertical one.<br>
 
 **Horizontal approach**
-<br>this way of play tetris tries to minimize the height of the Board Configuration and he doesn't care of the problem of the blanks space in each rows. <br \>
+this way of play tetris tries to minimize the height of the Board Configuration and he doesn't care of the problem of the blanks space in each rows. 
+<br>
 The follow image show the results of 15 run with this kind of approach:
 
 <p align="center">
@@ -97,7 +98,8 @@ The follow image show the results of 15 run with this kind of approach:
 </p>
 
 **Vertical approach** 
-<br>Is a kind of approach that tries to minimize the blanks in each rows of the Board Configuration and it doesn't care of the problem of the configuration's height. Of course this approach aims to build better configuration for the next pieces in input. <br \>
+Is a kind of approach that tries to minimize the blanks in each rows of the Board Configuration and it doesn't care of the problem of the configuration's height. Of course this approach aims to build better configuration for the next pieces in input. 
+<br>
 The follow image show the results of 15 run with this kind of approach:
 
 
@@ -106,8 +108,9 @@ The follow image show the results of 15 run with this kind of approach:
 </p>
 
 **Skynet** 
-<br>Our solution is a fusion of this two kinds of approaches. Like a human our Artificial Intelligence (Skynet) mix both way to play. It tries to minimize the blanks in each rows of the Board Configuration using the vertical approach, and when the configuratuon become too height it change strategy and tries to minimize this height with horizontal approach  <br \>
-So like a real player he based his strategy on a current event of game. The follow image show the results of 15 run with Skynet:
+Our solution is a fusion of this two kinds of approaches. Like a human our Artificial Intelligence (Skynet) mix both way to play. It tries to minimize the blanks in each rows of the Board Configuration using the vertical approach, and when the configuratuon become too height it change strategy and tries to minimize this height with horizontal approach.
+<br>
+So like a real player it bases its strategy on a current event of game. The follow image show the results of 15 run with Skynet:
 
 
 <p align="center">
