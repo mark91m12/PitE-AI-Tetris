@@ -21,8 +21,15 @@ As can be seen in the image this problem has been solved with the help of Java v
 Datalog is a declarative (programming) language. This means that the programmer does not write a program that solves some problem but instead specifies what the solution should look like, and a Datalog inference engine tries to find the the way to solve the problem and the solution itself. This is done with rules and facts.<br />  **Facts** are the input data, and **rules** can be used to derive more facts, and hopefully, the solution of the given problem.<br /> 
 DLV (datalog with disjunction) is a powerful though freely available deductive database system. It is based on the declarative programming language datalog, which is known for being a convenient tool for knowledge representation. With its disjunctive extensions, it is well suited for all kinds of nonmonotonic reasoning, including diagnosis and planning.
 
-* **DLV rappresentation of Tetris Game** <br />
-TO DO:
+* **DLV representation of Tetris Game** <br />
+The following image rapresents how pieces are built for the A.I.: there are 4 configuration for pieces (S,Z,J,L,T), 2 configuration for the I piece and just one for the O piece, the cell (2,2) of each piece rapresents the pivot of the shape (the piece will be placed on the board by the A.I. based on this cell).<br/>
+<p align="center">
+  <img width="660" height="400" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/skynet.PNG">
+</p><br/>
+The following example show how the A.I. works, it takes in input the new piece (in this case L with all its configuration) and the current board configuration, at this point based on this notions and applying all rules, it gives in output the cell where the piece must be placed.<br/>
+<p align="center">
+  <img width="660" height="400" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/skynet.PNG">
+</p>
 
 * **DLV Wrapper and py4j library** <br />
 The DLV Wrapper API is a Java Library containing a class called **DLVWrapper**; this class is a singleton that always returns the same object instance of WLVWrapper. The DLVWrapper class implements the necessary methods to create a new object that provides to initialize, execute and recive the results from a DLV process. The interface DLVInvocation implements the pattern Observer and it is the observable that notifies to every signed observer (each class implementing the interface DLVHandler) the results of DLV execution.<br /><br /> 
