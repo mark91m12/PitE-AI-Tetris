@@ -84,15 +84,15 @@ smaller(X,Y,F,C):-occupied(X,Y,F,C),occupied(X1,Y,F,C), X1<X.
 %Celle vuote sulle righe occupate
 emptyRow(X,Y):-empty(X,Y),occupiedRow(X1),X=X1.
 
-:~emptyRow(X,Y). [1:1]
+%:~emptyRow(X,Y). [1:1]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % 2 evita di lasciare pezzi sospesi , minimizza i vuoti ( crea configurazioni migliori ) .
 
-:~smallest(X,Y,F,C),emptyCont(_,Y). [1:4]
+%:~smallest(X,Y,F,C),emptyCont(_,Y). [1:4]
 
-:~smallest(X,Y,F,C),empty(X1,Y), X1=X-1 . [1:5]
+%:~smallest(X,Y,F,C),empty(X1,Y), X1=X-1 . [1:5]
 
  
 
@@ -102,7 +102,7 @@ emptyRow(X,Y):-empty(X,Y),occupiedRow(X1),X=X1.
 
 %occupiedRow(R):-occupied1(R,_,_).
 occupiedRow(R):-occupied(X,_,_,_),cell(R,_),R<=X.
-:~occupiedRow(R). [1:2]
+%:~occupiedRow(R). [1:2]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -114,4 +114,4 @@ numberFullCell(R,N) :- row(R),#count{C:occupiedIndex(R,C)}=N,#int(N).
 % una riga è piena se il numero di celle piene è pari alle colonne
 notFullRow(R):-numberFullCell(R,N),N != 10.
 
-:~notFullRow(R). [1:3]
+%:~notFullRow(R). [1:3]

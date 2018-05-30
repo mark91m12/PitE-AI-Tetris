@@ -26,9 +26,9 @@ class Board(QMainWindow):
     msg2NextBoard = pyqtSignal(object)
     BoardWidth = 10
     BoardHeight = 22
-    Speed = 70
+    
  
-    def __init__(self):
+    def __init__(self,mode):
         super().__init__()
         self.setStyleSheet("QMainWindow {background-image: url(../../data/border_part.png); border: 2px solid rgb(251, 226, 19); border-radius: 3px;}")
         self.setPalette(QPalette(Qt.white))
@@ -39,18 +39,29 @@ class Board(QMainWindow):
         self.nextCurPiece = Shape()
         self.nextCurPiece.setRandomShape()
         self.initBoard()
+        if mode == "n":
+           self.Speed = 70 
+           self.level = 0
+           self.counter = 0
+           self.msg2Level.emit(str(self.level))
+        elif mode == "f":
+           self.Speed = 5 
+           self.level = 5
+           self.counter = 0
+           self.msg2Level.emit(str(self.level))
         self.start()
         self.newPiece()
         self.player_main_music = QMediaPlayer()
+        self.player_main_fast = QMediaPlayer()
         self.player_delete1row = QMediaPlayer()
         self.player_delete4row = QMediaPlayer()
         self.player_pause_sound = QMediaPlayer()
         self.playlist_main = QMediaPlaylist()
-        self.start_main_music() 
-        
-        self.level = 1
-        self.counter = 0
-        self.msg2Level.emit(str(self.level))
+        if mode == "n":
+            self.start_main_music()
+        elif mode == "f":
+            self.start_main_music_fast()
+                  
                 
                
     def initBoard(self):
@@ -174,7 +185,7 @@ class Board(QMainWindow):
             else:
                 self.oneLineDown()
 
-                self.wait = False
+                '''self.wait = False
 
                 x = int(dlv.getX())
                 y = int(dlv.getY()) + 1
@@ -195,7 +206,7 @@ class Board(QMainWindow):
                 if x < self.curX and not self.wait:
                     self.tryMove(self.curPiece, self.curX - 1, self.curY)
                 elif x > self.curX and not self.wait:
-                    self.tryMove(self.curPiece, self.curX + 1, self.curY)
+                    self.tryMove(self.curPiece, self.curX + 1, self.curY)'''
 
     def clearBoard(self):
         '''clears shapes from the board'''
@@ -282,28 +293,34 @@ class Board(QMainWindow):
         
 
     def newPiece(self):
-        '''creates a new shape'''
+       '''creates a new shape'''
 
-        self.curPiece = Shape()
-        self.curPiece.setRandomShape()
-        
-        self.tempCurPiece = Shape()
-        self.tempCurPiece = self.nextCurPiece
-        self.nextCurPiece = self.curPiece
-        self.curPiece = self.tempCurPiece
-        self.msg2NextBoard.emit(str(self.nextCurPiece.nextNum))
-        
-        
-        self.curPiece.set_congif(1)
-        self.curX = self.BoardWidth // 2
-        self.curY = self.BoardHeight - 1 + self.curPiece.minY()
+       self.curPiece = Shape()
+       self.curPiece.setRandomShape()
+       
+       self.tempCurPiece = Shape()
+       self.tempCurPiece = self.nextCurPiece
+       self.nextCurPiece = self.curPiece
+       self.curPiece = self.tempCurPiece
+       self.msg2NextBoard.emit(str(self.nextCurPiece.nextNum))
+       
+       
+       self.curPiece.set_congif(1)
+       #self.curX = self.BoardWidth // 2
+       #self.curY = self.BoardHeight - 1 + self.curPiece.minY()
 
-        self.skynet(self.curPiece.shape())
+       self.skynet(self.curPiece.shape())
+           
+       self.rotatePiece(int(dlv.getRotation()))
+       
+       self.curX = int(dlv.getX())
+       self.curY = self.BoardHeight - 1 + self.curPiece.minY()
+       
 
-        if not self.tryMove(self.curPiece, self.curX, self.curY):
-            self.endGame()
-            self.msg2State.emit(str("LOSE"))
-            self.start_lose_sound()
+       if not self.tryMove(self.curPiece, self.curX, self.curY):
+           self.endGame()
+           self.msg2State.emit(str("LOSE"))
+           self.start_lose_sound()
             
    
             
@@ -312,6 +329,23 @@ class Board(QMainWindow):
         file_input = open("../../AI/input.dl", "w")
         file_input.write(
             "place(F,X,Y,C) v notPlace(F,X,Y,C) :- shape(F,_,_,C),cell(X,Y), X<=" + str(self.top_board + 4) + ".")
+        
+        file_optimize = open("../../AI/optimize.dl","w")
+ 
+        if self.top_board >= 7 :
+            file_optimize.write(":~emptyRow(X,Y). [1:1] \n"
+                                +":~smallest(X,Y,F,C),empty(X1,Y), X1=X-1 . [1:2]\n"
+                                +":~occupiedRow(R). [1:3]\n"
+                                +":~notFullRow(R). [1:4]\n")
+        else :
+            file_optimize.write(":~emptyRow(X,Y). [1:1] \n"
+                                +":~smallest(X,Y,F,C),empty(X1,Y), X1=X-1 . [1:4]\n"
+                                +":~occupiedRow(R). [1:2]\n"
+                                +":~notFullRow(R). [1:3]\n")
+            
+        file_optimize.close()
+        
+        
         self.top_board = 0
 
         file_board_configuration = open("../../AI/config.dl", "w")
@@ -424,6 +458,15 @@ class Board(QMainWindow):
         self.playlist_main.setPlaybackMode(QMediaPlaylist.Loop)
         self.player_main_music.setPlaylist(self.playlist_main)
         self.player_main_music.play()    
+    
+    def start_main_music_fast(self):
+        version = random.randint(1,2)
+        url = "../../data/sound/soundtrack_frenzy.mp3"
+        self.url_main = QUrl.fromLocalFile(url)
+        self.playlist_main.addMedia(QMediaContent(self.url_main))
+        self.playlist_main.setPlaybackMode(QMediaPlaylist.Loop)
+        self.player_main_music.setPlaylist(self.playlist_main)
+        self.player_main_music.play()
     
     def stop_main_music(self):
         self.player_main_music.stop()

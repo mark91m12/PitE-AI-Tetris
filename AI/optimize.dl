@@ -1,0 +1,4 @@
+:~emptyRow(X,Y). [1:1] 
+:~smallest(X,Y,F,C),empty(X1,Y), X1=X-1 . [1:2]
+:~occupiedRow(R). [1:3]
+:~notFullRow(R). [1:4]

@@ -186,7 +186,7 @@ class run(object):
         startMusic()
         
 
-        menu1 = {"menu": ['START GAME', 'ABOUT', 'EXIT'], "font1": f4, "pos":
+        menu1 = {"menu": ['START GAME','START FRENZY MODE', 'ABOUT', 'EXIT'], "font1": f4, "pos":
                  'center', "color1": (251, 226, 19), "light": 6, "speed": 200, "lag": 20}
 
         menu3 = {"menu": ['Carricato Mario Egidio', 'Marco Amato', 'BACK'], "font1": f1, "pos":
@@ -221,24 +221,34 @@ class run(object):
                print("Exit")
 
             if resp == 'START GAME':
-                stopmusic()
-                mainmenu = f.render('Skynet Tetris', 10, (253, 158, 52))
-                r = mainmenu.get_rect()
-                r.centerx, r.top = 512, 120
-                display.update(scr.blit(bg, r, r))
-                display.quit()
-                form = Tetris()
-                form.show()
-                app.exec_()
-                app.closingDown()               
+               mode = "n"
+               play_mode_game(f,scr,bg,mode)
                 
-                mymenu = run()
-                mymenu.runm()
-                               
-                resp = "re-show"
-                display.update(scr.blit(mainmenu, r))                                          
+            if resp == 'START FRENZY MODE':
+                mode = "f"
+                play_mode_game(f,scr,bg,mode)                                       
                 
                 
+
+
+def play_mode_game(f,scr,bg,mode):
+        stopmusic()
+        mainmenu = f.render('Skynet Tetris', 10, (253, 158, 52))
+        r = mainmenu.get_rect()
+        r.centerx, r.top = 512, 120
+        display.update(scr.blit(bg, r, r))
+        display.quit()
+        form = Tetris(mode)
+        form.show()
+        app.exec_()
+        app.closingDown()               
+        
+        mymenu = run()
+        mymenu.runm()    
+                       
+        resp = "re-show"
+        display.update(scr.blit(mainmenu, r)) 
+    
 
 def playsound(soundfile):
     """Play sound through default mixer channel in blocking manner.

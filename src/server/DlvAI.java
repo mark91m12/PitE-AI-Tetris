@@ -26,6 +26,7 @@ public class DlvAI {
 	private String rules_path = "AI/AI.dl";
 	private String config_path = "AI/config.dl";
 	private String input_path = "AI/input.dl";
+	private String optimize_path = "AI/optimize.dl";
 	
 	private DLVInputProgram inputProgram;
 	private Predicate result;
@@ -84,6 +85,7 @@ public class DlvAI {
 		inputProgram.addFile(rules_path);
 		inputProgram.addFile(config_path);
 		inputProgram.addFile(input_path);
+		inputProgram.addFile(optimize_path);
 
 		invocation.setNumberOfModels(1);
  		

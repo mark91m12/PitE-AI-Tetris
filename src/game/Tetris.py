@@ -12,12 +12,12 @@ from PyQt5.QtCore import *
 
 class Tetris(QWidget):
 
-    def __init__(self,parent=None):
+    def __init__(self,mode,parent=None):
        super(Tetris, self).__init__(parent)
 
-       self.initUI()
+       self.initUI(mode)
 
-    def initUI(self):
+    def initUI(self,mode):
         '''initiates application UI'''
 
         self.setWindowTitle("Skynet Tetris")
@@ -57,7 +57,7 @@ class Tetris(QWidget):
         self.PausePushButton.setStyleSheet(" background-color: rgb(0, 255, 0); border: none;")
         
 
-        self.board = Board()
+        self.board = Board(mode)
         self.stack2 = QStackedWidget()
         self.stack2.setFrameStyle(QFrame.Panel | QFrame.Raised)
         self.area2 = NextBoard()
