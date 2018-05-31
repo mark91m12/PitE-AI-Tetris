@@ -84,13 +84,13 @@ Has been developed python desktop application that is able to receive messages f
    $ pip install py4j
   ```
   
-  Install DLV Wrapper with:
-  
-  // TO DO
-  
-  
 **Basic usage**
-  // TO DO 
+  You can use the [eclipse](https://www.eclipse.org/downloads/packages/all) ide for java developers, once the project has been imported in order to run the Java module you need to configure the build path adding the libraries DlvWrapper and Py4j, now you can run the Java module named Bridge.
+  At this point once the server is running you can launch the python game directly from ecplipse using the plugin [PyDev](http://www.pydev.org/) or you simply move in the project folder, precisely in the folder "src/game" and run the following command :
+  
+  ```shell
+   $ python MainMenu.py
+  ```
 
 ## Games approaches and Testing
 Like in real life were taken into consideration two of most common ways to play Tetris: the horizontal one (rarely used) and the vertical one.<br>
