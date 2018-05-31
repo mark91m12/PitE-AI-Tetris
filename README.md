@@ -25,7 +25,7 @@ DLV (datalog with disjunction) is a powerful though freely available deductive d
 * **DLV representation of Tetris Game** <br />
 The following image rapresents how pieces are built for the A.I.: there are 4 configuration for pieces (S,Z,J,L,T), 2 configuration for the I piece and just one for the O piece, the cell (2,2) of each piece rapresents the pivot of the shape (the piece will be placed on the board by the A.I. based on this cell).<br/>
 <p align="center">
-  <img width="760" height="800" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/Copy%20of%20shapes%20Tetris%20-%20New%20frame.jpg">
+  <img width="400" height="600" src="https://raw.githubusercontent.com/Mario181091/Mario_content/master/Copy%20of%20shapes%20Tetris%20-%20New%20frame.jpg">
 </p><br/>
 The following example show how the A.I. works, it takes in input the new piece (in this case L with all its configuration) and the current board configuration, at this point based on this notions and applying all rules, it gives in output the cell where the piece must be placed.<br/>
 <p align="center">
