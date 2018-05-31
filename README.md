@@ -4,6 +4,7 @@
 
 # PitE-Ai-Tetris
 
+[![HitCount](http://hits.dwyl.io/mark91m12/PitE-AI-Tetris.svg)](http://hits.dwyl.io/mark91m12/PitE-AI-Tetris)     [![M&M](https://img.shields.io/badge/m%26m-projects-blue.svg)](https://img.shields.io/badge/m%26m-projects-blue.svg)
 
 This is the project of the course "Python in the Enterprise", has been implemented an Artificial intelligence for the game [Tetris](https://en.wikipedia.org/wiki/Tetris), has been used [DLV](https://en.wikipedia.org/wiki/DLV) for the core of A.I. and then through a Java Module it has been linked with Python.
 
@@ -85,8 +86,8 @@ Has been developed python desktop application that is able to receive messages f
   ```
   
 **Basic usage**
-  You can use the [eclipse](https://www.eclipse.org/downloads/packages/all) ide for java developers, once the project has been imported in order to run the Java module you need to configure the build path adding the libraries DlvWrapper and Py4j, now you can run the Java module named Bridge.
-  At this point once the server is running you can launch the python game directly from ecplipse using the plugin [PyDev](http://www.pydev.org/) or you simply move in the project folder, precisely in the folder "src/game" and run the following command :
+<br> You can use the [eclipse](https://www.eclipse.org/downloads/packages/all) ide for java developers, once the project has been imported in order to run the Java module you need to configure the build path adding the libraries DlvWrapper and Py4j, now you can run the Java module named Bridge.
+At this point once the server is running you can launch the python game directly from ecplipse using the plugin [PyDev](http://www.pydev.org/) or you simply move in the project folder, precisely in the folder "src/game" and run the following command :
   
   ```shell
    $ python MainMenu.py
